@@ -12,7 +12,7 @@ from datasets import load_dataset
 
 # Reduce max_length to 128 to prevent position embedding overflow
 def prepare_data(tokenizer, max_length=128):
-    dataset = load_dataset("imdb")
+    dataset = load_dataset("HuggingFaceH4/MATH-500")
 
     def tokenize_function(examples):
         texts = [
