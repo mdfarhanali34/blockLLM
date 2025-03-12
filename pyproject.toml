@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "poetry init"
+version = "0.1.0"
+description = ""
+authors = ["mdfarhanali34 <farhandxb96@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+torch = "^2.6.0"
+transformers = "^4.49.0"
+bitsandbytes = "^0.45.3"
+datasets = "^3.3.2"
+loguru = "^0.7.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
