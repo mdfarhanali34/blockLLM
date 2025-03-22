@@ -1,94 +1,123 @@
-# BlockLLM
-BlockLLM is a specialized optimizer designed to perform memory-efficient training of large language models (LLMs). By targeting specific coordinate blocks for optimization, BlockLLM reduces the memory footprint and accelerates training, making it ideal for scaling large models on resource-constrained hardware.
+---
 
-This is the official implementation of our paper https://arxiv.org/abs/2406.17296
+```markdown
+# 🧠 BlockLLM vs GaLore: Memory-Efficient LLM Training (CPU-Compatible)
 
-![BlockLLM](./BlockLLM.png)
+This project benchmarks two memory-efficient optimization techniques — **BlockLLM** and **GaLore** — for training transformer-based language models, with a focus on **CPU-only environments**.
 
+It:
+- Trains a HuggingFace-compatible language model (e.g., `distilgpt2`) on a sample dataset
+- Applies both **BlockLLM** and **GaLore** optimizers
+- Tracks training & validation loss across epochs
+- Monitors **CPU memory usage** using `psutil`
+- Outputs performance comparison plots
 
-## Installation
+---
 
-1. Clone the repository:
-```bash
-git clone https://github.com/RAmruthaVignesh/blockllm.git
-cd blockllm
+## 📦 Installation & Running Instructions (Poetry Setup)
+
+This project uses [Poetry](https://python-poetry.org/) for dependency and environment management.
+
+### ✅ Step-by-Step:
+
+1. **Install Poetry** (if not already installed):
+
+   ```bash
+   curl -sSL https://install.python-poetry.org | python3 -
+   ```
+
+2. **Install dependencies**:
+
+   From the root of the project folder (where `pyproject.toml` is located):
+
+   ```bash
+   poetry install
+   ```
+
+3. **Activate the virtual environment**:
+
+   ```bash
+   poetry shell
+   ```
+
+4. **Run the training & comparison script**:
+
+   ```bash
+   python -m examples.train_wikitext
+   ```
+
+---
+
+## 🚀 Features
+
+✅ CPU-only compatible (no CUDA required)  
+✅ Compares **BlockLLM** and **GaLore** optimizers  
+✅ Tracks training/validation loss over time  
+✅ Monitors **CPU RAM usage** using `psutil`  
+✅ Automatically generates performance plots and a Markdown summary
+
+---
+
+## 🛠 Configurable Arguments
+
+You can customize training via command-line arguments:
+
+| Argument             | Description                                | Default               |
+|----------------------|--------------------------------------------|-----------------------|
+| `--model_name`       | HuggingFace model name                     | `distilgpt2`          |
+| `--dataset`          | Dataset name                               | `HuggingFaceH4/MATH-500` |
+| `--batch_size`       | Training batch size                        | `8`                   |
+| `--epochs`           | Number of training epochs                  | `3`                   |
+| `--methods`          | Optimizers to compare (`blockllm,galore`)  | `blockllm,galore`     |
+| `--output_dir`       | Output folder for plots & logs             | `./results`           |
+
+---
+
+## 📁 Outputs
+
+After training, you'll get:
+
+- 📉 **Loss plot**:  
+  `results/cpu_optimization_comparison.png`  
+  → Compares training and validation loss for BlockLLM and GaLore
+
+- 📋 **Markdown results table**:  
+  `results/comparison_results.md`  
+  → Summarizes final losses, average epoch time, and peak CPU memory
+
+---
+
+## 📊 Sample Output Table
+
+| Method   | Final Train Loss | Final Val Loss | Avg Epoch Time | Peak Memory |
+|----------|------------------|----------------|----------------|-------------|
+| BlockLLM | 3.6753           | 3.5486         | 254.42s        | 1.02 GB     |
+| GaLore   | 4.6218           | 4.5899         | 541.84s        | 1.31 GB     |
+
+---
+
+## 🧱 Optimizer Summary
+
+| Optimizer  | Strategy                               | Ideal For               |
+|------------|-----------------------------------------|--------------------------|
+| BlockLLM   | Sparse updates on block-partitioned params | Memory-constrained training |
+| GaLore     | Low-rank approximations of gradients    | Balanced memory-performance tradeoff |
+
+---
+
+## 👏 Acknowledgements
+
+- [HuggingFace Transformers](https://github.com/huggingface/transformers)
+- [BlockLLM (RAIVN Lab)](https://github.com/RAIVNLab/blockllm)
+- [GaLore (UCSD + CMU)](https://github.com/Liuhong99/GaLore)
+
+---
+
+## 🪪 License
+
+This project is licensed under the **MIT License**.
 ```
 
-2. Install the required dependencies:
-```bash
-pip install -r requirements.txt
-```
+---
 
-## Quick Start
-
-The repository includes an example script that demonstrates how to use BlockLLM with the WikiText dataset. To run the example:
-
-```bash
-python examples/train_wikitext.py
-```
-
-This script:
-1. Loads a pretrained language model from Hugging Face
-2. Applies BlockLLM optimization
-3. Fine-tunes the model on the WikiText dataset
-
-## Requirements
-
-- Python 3.7+
-- PyTorch
-- Transformers
-- Datasets
-- Bitsandbytes
-- Loguru
-
-## Usage
-
-Here's a basic example of how to use BlockLLM with your own model:
-
-```python
-from blockllm_torch.blockllm import BlockLLM, BlockLLMConfig
-from transformers import AutoModelForCausalLM
-
-# Load your model
-model = AutoModelForCausalLM.from_pretrained("your-model-name")
-
-# Configure BlockLLM
-config = BlockLLMConfig(
-    block_size=8,
-    sparsity_ratio=0.9
-)
-
-# Create optimizer
-optimizer = BlockLLM(
-    model.parameters(),
-    lr=1e-4,
-    config=config
-)
-
-# Train as usual
-optimizer.zero_grad()
-outputs = model(**inputs)
-loss = outputs.loss
-loss.backward()
-optimizer.step()
-```
-
-## License
-
-MIT License
-
-## Citation
-
-If you find our work useful, please consider citing our paper: 
-
-```
-@misc{ramesh2024blockllmmemoryefficientadaptationllms,
-      title={BlockLLM: Memory-Efficient Adaptation of LLMs by Selecting and Optimizing the Right Coordinate Blocks}, 
-      author={Amrutha Varshini Ramesh and Vignesh Ganapathiraman and Issam H. Laradji and Mark Schmidt},
-      year={2024},
-      eprint={2406.17296},
-      archivePrefix={arXiv},
-      primaryClass={cs.LG},
-      url={https://arxiv.org/abs/2406.17296}, 
-}
-```
+Let me know if you'd like to include badges, a demo GIF, or push this to GitHub Pages for visualization!
